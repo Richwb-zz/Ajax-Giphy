@@ -1,16 +1,11 @@
 // Holds topics
 var topics = ["Looney Tunes", "Scuba", "Trending", "Evil Cats", "Laser", "Coding"];
 
+$("#addfav").prop("disabled", true);
 
-var gifTopics = "<div class='col-md-auto'>";
-// Loops through topics and creates buttons
-$.each(topics, function(index, value){
-	gifTopics += "<button class='favs btn btn-primary'>" + value + "</button>";
-});
+loadFavBar();
 
-gifTopics += "</div>";
 
-$(".navbar-collapse").prepend(gifTopics);
 
 // Detect enter button on searchbox and call search function
 $(document).on("keyup", '#searchbox', function(key){
@@ -20,7 +15,10 @@ $(document).on("keyup", '#searchbox', function(key){
 });
 
 // Call search function on search button click
-$(document).on("click","#searchbtn", function(){
+$("#searchsubmit").on("click",function(event){
+	
+	event.preventDefault();
+	
 	loadGif($("#searchbox").val());
 	console.log($("#searchbox").val());
 });
@@ -37,24 +35,55 @@ $(document).on("click", ".gif", function(){
 	$(this).attr("data-url", newDataUrl); 
 });
 
+$("#addfav").on("click", function(){
+	if($(this).attr("data-fav") !== ""){
+		topics.push($(this).attr("data-fav"));
+		loadFavBar();
+	}
+});
+
+
+function loadFavBar(){
+	$("#favbtnlist").empty();
+
+	var gifTopics = "<div class='col-md-auto'>";
+	// Loops through topics and creates buttons
+	$.each(topics, function(index, value){
+		gifTopics += "<button class='favs btn btn-primary'>" + value + "</button>";
+	});
+
+	gifTopics += "</div>";
+
+	$("#favbtnlist").prepend(gifTopics);
+}
 
 // Giphy api call
 function loadGif(topic){
 	
-	// clear previous images
-	$("#images").html("");
+	if(topic === ""){
+		$("#addfav").prop("disabled", true);
+	}else{
+		$("#addfav").prop("disabled", false);
 
-	$.ajax({
-	   url: "https://api.giphy.com/v1/gifs/search?q=" + topic + "&rating=g&rating=pg&rating=pg-13&limit=10&api_key=dc6zaTOxFJmzC",
-	   method: "GET"
-	}).done(function(response) {
-		console.log(response);
-	 	// Loops through api and gets the gifs and static image and put them in a image tag
-		$.each(response.data, function(index, gif){
+		$("#addfav").attr("data-fav", topic);
 
-	   	$("#images").append("<div class='inline'><img src='" + gif.images.fixed_height_still.url + "'' class='gif' data-url='" + gif.images.fixed_height.url + "'></img><div id='rating' class='text-center'>Rating: " + gif.rating.toUpperCase() +"</div><div>");
+		$("#searchbox").val("");
+
+		// clear previous images
+		$("#images").html("");
+
+		$.ajax({
+		   url: "https://api.giphy.com/v1/gifs/search?q=" + topic + "&rating=g&rating=pg&rating=pg-13&limit=10&api_key=dc6zaTOxFJmzC",
+		   method: "GET"
+		}).done(function(response) {
+			console.log(response);
+		 	// Loops through api and gets the gifs and static image and put them in a image tag
+			$.each(response.data, function(index, gif){
+
+		   	$("#images").append("<div id='gif' class='inline px-3 pt-3 pb-2'><img src='" + gif.images.fixed_height_still.url + "'' class='gif' data-url='" + gif.images.fixed_height.url + "'></img><div id='rating' class='pt-2 text-center align-middle'>Rating: " + gif.rating.toUpperCase() +"</div><div>");
+
+			});
 
 		});
-
-	});
+	}
 }

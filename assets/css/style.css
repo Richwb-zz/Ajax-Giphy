@@ -1,3 +1,12 @@
+body{
+	background-color: orange;
+}
+
+#gif{
+	background-color: lightgreen;
+	border-radius: 5px;
+}
+
 .inline{
 	display: inline-block;
 	margin: 5px;
@@ -21,4 +30,25 @@ border-radius: 4px;
 .favs{
 	margin-right: 5px;
 	margin-top: 5px;
+}
+
+.btn-outline-fav{
+	color: purple;
+	background-image: none;
+	background-color: transparent;
+	border-color: purple;
+}
+
+.btn-outline-fav:hover{
+	color:#fff;
+	background-color: purple;
+	border-color: purple
+}
+.btn-outline-fav:focus{
+-webkit-box-shadow: 0 0 0 2px rgba(92,184,92,.5);
+box-shadow:0 0 0 2px rgba(92,184,92,.5)
+}
+
+.favSearch{
+	min-width: 377px;
 }
